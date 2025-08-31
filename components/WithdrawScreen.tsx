@@ -91,7 +91,7 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
 
       Alert.alert(
         'Retiro solicitado',
-        `Se procesará el retiro de Bs. ${selectedAmount.toFixed(2)} en 1-2 días hábiles.`
+        `Se procesará el retiro de Bs. ${selectedAmount.toFixed(2)} en los próxmos 5 minutos.`
       );
 
       setSelectedAmount(null);
@@ -182,7 +182,7 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
 
             <View style={styles.withdrawalInfo}>
               <Text style={styles.infoTitle}>Información de Retiro</Text>
-              <Text style={styles.infoText}>• Los retiros se procesan en 1-2 días hábiles</Text>
+              <Text style={styles.infoText}>• Los retiros se procesan en  los próximos 5 minutos</Text>
               <Text style={styles.infoText}>• Se depositará en tu cuenta bancaria registrada</Text>
               <Text style={styles.infoText}>• No hay comisiones por retiros</Text>
             </View>
