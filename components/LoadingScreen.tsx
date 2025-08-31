@@ -5,8 +5,8 @@ import { CreditCard } from 'lucide-react-native';
 export default function LoadingScreen() {
   return (
     <View style={styles.container}>
-      <CreditCard size={64} color="#1E40AF" />
-      <Text style={styles.title}>TransWallet</Text>
+      <CreditCard size={64} color="#266441" />
+      <Text style={styles.title}>Jichi Pay</Text>
       <Text style={styles.subtitle}>Cargando...</Text>
     </View>
   );
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1E40AF',
+    color: '#266441',
     marginTop: 24,
   },
   subtitle: {

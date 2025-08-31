@@ -73,18 +73,18 @@ export default function ProfileScreen({ user, onBack }: ProfileScreenProps) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <ArrowLeft size={24} color="#1E40AF" />
+          <ArrowLeft size={24} color="#266441" />
         </TouchableOpacity>
         <Text style={styles.title}>Mi Perfil</Text>
         <TouchableOpacity style={styles.editButton} onPress={()=> router.push('/(tabs)')}>
-          <Edit3 size={20} color="#1E40AF" />
+          <Edit3 size={20} color="#266441" />
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
-            <User size={48} color="#1E40AF" />
+            <User size={48} color="#266441" />
           </View>
           <Text style={styles.userName}>{user.full_name}</Text>
           <Text style={styles.userEmail}>{user.email}</Text>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     fontWeight: '600',
-    color: '#1E40AF',
+    color: '#266441',
     textAlign: 'center',
   },
   editButton: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1E40AF',
+    color: '#266441',
     textAlign: 'center',
   },
   userEmail: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   roleBadge: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#266441',
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 20,

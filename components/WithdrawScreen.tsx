@@ -110,13 +110,13 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
       {/* Header fijo */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <ArrowLeft size={24} color="#1E40AF" />
+          <ArrowLeft size={24} color="#266441" />
         </TouchableOpacity>
         <Text style={styles.title}>Retirar</Text>
 
         {/* Botón Recargar */}
         <TouchableOpacity style={styles.refreshButton} onPress={manualRefresh} disabled={refreshing}>
-          <RefreshCcw size={18} color="#1E40AF" />
+          <RefreshCcw size={18} color="#266441" />
         </TouchableOpacity>
       </View>
 
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     fontWeight: '600',
-    color: '#1E40AF',
+    color: '#266441',
     textAlign: 'center',
   },
   // botón recargar
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
   },
-  refreshText: { marginLeft: 6, color: '#1E40AF', fontWeight: '600', fontSize: 12 },
+  refreshText: { marginLeft: 6, color: '#266441', fontWeight: '600', fontSize: 12 },
 
   /* ScrollView */
   scrollContent: {

@@ -304,7 +304,7 @@ export default function PassengerView({ user }: PassengerViewProps) {
             style={styles.actionButton}
             onPress={() => router.push('/(tabs)/profile')}
           >
-            <Users size={20} color="#1E40AF" />
+            <Users size={20} color="#266441" />
             <Text style={styles.actionButtonText}>Perfil</Text>
           </TouchableOpacity>
         </View>
@@ -319,7 +319,7 @@ export default function PassengerView({ user }: PassengerViewProps) {
             style={styles.refreshButton}
             disabled={refreshing}
           >
-            <RefreshCcw size={16} color="#1E40AF" />
+            <RefreshCcw size={16} color="#266441" />
           </TouchableOpacity>
         </View>
 
@@ -367,14 +367,14 @@ export default function PassengerView({ user }: PassengerViewProps) {
                     style={styles.counterButton}
                     onPress={() => updatePassengerCount('adults', false)}
                   >
-                    <Minus size={16} color="#1E40AF" />
+                    <Minus size={16} color="#266441" />
                   </TouchableOpacity>
                   <Text style={styles.counterText}>{passengerCount.adults}</Text>
                   <TouchableOpacity
                     style={styles.counterButton}
                     onPress={() => updatePassengerCount('adults', true)}
                   >
-                    <Plus size={16} color="#1E40AF" />
+                    <Plus size={16} color="#266441" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -386,14 +386,14 @@ export default function PassengerView({ user }: PassengerViewProps) {
                     style={styles.counterButton}
                     onPress={() => updatePassengerCount('students', false)}
                   >
-                    <Minus size={16} color="#1E40AF" />
+                    <Minus size={16} color="#266441" />
                   </TouchableOpacity>
                   <Text style={styles.counterText}>{passengerCount.students}</Text>
                   <TouchableOpacity
                     style={styles.counterButton}
                     onPress={() => updatePassengerCount('students', true)}
                   >
-                    <Plus size={16} color="#1E40AF" />
+                    <Plus size={16} color="#266441" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -405,14 +405,14 @@ export default function PassengerView({ user }: PassengerViewProps) {
                     style={styles.counterButton}
                     onPress={() => updatePassengerCount('children', false)}
                   >
-                    <Minus size={16} color="#1E40AF" />
+                    <Minus size={16} color="#266441" />
                   </TouchableOpacity>
                   <Text style={styles.counterText}>{passengerCount.children}</Text>
                   <TouchableOpacity
                     style={styles.counterButton}
                     onPress={() => updatePassengerCount('children', true)}
                   >
-                    <Plus size={16} color="#1E40AF" />
+                    <Plus size={16} color="#266441" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#1E40AF',
+    color: '#266441',
     textAlign: 'center',
     marginVertical: 8,
   },
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
   },
-  actionButtonText: { marginLeft: 8, fontSize: 16, fontWeight: '500', color: '#1E40AF' },
+  actionButtonText: { marginLeft: 8, fontSize: 16, fontWeight: '500', color: '#266441' },
 
   busesSection: { flex: 1, paddingHorizontal: 24, paddingTop: 24 },
   sectionHeaderRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
   },
-  refreshText: { marginLeft: 6, color: '#1E40AF', fontWeight: '600', fontSize: 12 },
+  refreshText: { marginLeft: 6, color: '#266441', fontWeight: '600', fontSize: 12 },
 
   busCard: {
     backgroundColor: '#fff',
@@ -508,14 +508,14 @@ const styles = StyleSheet.create({
   },
   busHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   busInfo: { flex: 1 },
-  busRoute: { fontSize: 18, fontWeight: '600', color: '#1E40AF' },
+  busRoute: { fontSize: 18, fontWeight: '600', color: '#266441' },
   busPlate: { fontSize: 14, color: '#64748b', marginTop: 2 },
   driverName: { fontSize: 14, color: '#64748b', marginTop: 2 },
   distanceContainer: { flexDirection: 'row', alignItems: 'center' },
   distance: { fontSize: 14, color: '#059669', fontWeight: '500', marginLeft: 4 },
 
   payButton: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#266441',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -533,9 +533,9 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 40,
   },
-  modalTitle: { fontSize: 24, fontWeight: 'bold', color: '#1E40AF', textAlign: 'center', marginBottom: 16 },
+  modalTitle: { fontSize: 24, fontWeight: 'bold', color: '#266441', textAlign: 'center', marginBottom: 16 },
   selectedBusInfo: { backgroundColor: '#f1f5f9', padding: 16, borderRadius: 12, marginBottom: 24, alignItems: 'center' },
-  selectedBusRoute: { fontSize: 18, fontWeight: '600', color: '#1E40AF' },
+  selectedBusRoute: { fontSize: 18, fontWeight: '600', color: '#266441' },
   selectedBusPlate: { fontSize: 14, color: '#64748b', marginTop: 4 },
 
   passengerSelection: { marginBottom: 24 },
@@ -558,14 +558,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  counterText: { fontSize: 18, fontWeight: '600', color: '#1E40AF', marginHorizontal: 16 },
+  counterText: { fontSize: 18, fontWeight: '600', color: '#266441', marginHorizontal: 16 },
 
   totalSection: { backgroundColor: '#f1f5f9', padding: 16, borderRadius: 12, marginBottom: 24, alignItems: 'center' },
-  totalText: { fontSize: 24, fontWeight: 'bold', color: '#1E40AF' },
+  totalText: { fontSize: 24, fontWeight: 'bold', color: '#266441' },
 
   modalActions: { flexDirection: 'row', gap: 12 },
   cancelButton: { flex: 1, backgroundColor: '#f1f5f9', paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
   cancelButtonText: { fontSize: 16, fontWeight: '600', color: '#64748b' },
-  confirmButton: { flex: 1, backgroundColor: '#1E40AF', paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
+  confirmButton: { flex: 1, backgroundColor: '#266441', paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
   confirmButtonText: { fontSize: 16, fontWeight: '600', color: '#fff' },
 });

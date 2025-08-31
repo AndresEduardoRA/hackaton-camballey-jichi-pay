@@ -122,7 +122,7 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
         >
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={onBack}>
-              <ArrowLeft size={24} color="#1E40AF" />
+              <ArrowLeft size={24} color="#266441" />
             </TouchableOpacity>
             <Text style={styles.title}>Depositar</Text>
 
@@ -132,13 +132,13 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
               onPress={manualRefresh}
               disabled={refreshing}
             >
-              <RefreshCcw size={18} color="#1E40AF" />
+              <RefreshCcw size={18} color="#266441" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.content}>
             <View style={styles.qrSection}>
-              <QrCode size={120} color="#1E40AF" />
+              <QrCode size={120} color="#266441" />
               <Text style={styles.qrTitle}>Código QR para Depósito</Text>
               <Text style={styles.qrSubtitle}>
                 Escanea este código en cualquier agente autorizado
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     fontWeight: '600',
-    color: '#1E40AF',
+    color: '#266441',
     textAlign: 'center',
   },
 
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
   },
-  refreshText: { marginLeft: 6, color: '#1E40AF', fontWeight: '600', fontSize: 12 },
+  refreshText: { marginLeft: 6, color: '#266441', fontWeight: '600', fontSize: 12 },
 
   content: { flex: 1, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 24 },
 
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  qrTitle: { fontSize: 18, fontWeight: '600', color: '#1E40AF', marginTop: 16 },
+  qrTitle: { fontSize: 18, fontWeight: '600', color: '#266441', marginTop: 16 },
   qrSubtitle: { fontSize: 14, color: '#64748b', textAlign: 'center', marginTop: 8, paddingHorizontal: 16 },
 
   amountSection: {
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
-  amountButtonSelected: { borderColor: '#1E40AF', backgroundColor: '#1E40AF' },
+  amountButtonSelected: { borderColor: '#266441', backgroundColor: '#266441' },
   amountText: { fontSize: 16, fontWeight: '600', color: '#374151' },
   amountTextSelected: { color: '#fff' },
 
@@ -303,10 +303,10 @@ const styles = StyleSheet.create({
   summaryValue: { fontSize: 16, fontWeight: '500', color: '#374151' },
   totalRow: { borderTopWidth: 1, borderTopColor: '#e5e7eb', marginTop: 8, paddingTop: 16 },
   totalLabel: { fontSize: 18, fontWeight: '600', color: '#374151' },
-  totalValue: { fontSize: 18, fontWeight: 'bold', color: '#1E40AF' },
+  totalValue: { fontSize: 18, fontWeight: 'bold', color: '#266441' },
 
   depositButton: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#266441',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',

@@ -7,9 +7,12 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  Image,
 } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
-import { CreditCard, User, FileText, Eye, EyeOff } from 'lucide-react-native';
+import { User, FileText, Eye, EyeOff } from 'lucide-react-native';
+
+const favicon = require('../assets/favicon.png');
 
 export default function AuthScreen() {
   const { signIn, signUp } = useAuth();
@@ -74,8 +77,10 @@ export default function AuthScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <CreditCard size={48} color="#1E40AF" />
-        <Text style={styles.title}>TransWallet</Text>
+        <Image source={favicon} style={{
+          width: 64, height: 64, borderRadius: 16
+        }} />
+        <Text style={styles.title}>Jichi Pay</Text>
         <Text style={styles.subtitle}>
           {isLogin ? 'Inicia sesión' : 'Crear cuenta'}
         </Text>
@@ -132,7 +137,7 @@ export default function AuthScreen() {
                 style={[styles.roleButton, role === 'passenger' && styles.roleButtonActive]}
                 onPress={() => setRole('passenger')}
               >
-                <User size={20} color={role === 'passenger' ? '#fff' : '#1E40AF'} />
+                <User size={20} color={role === 'passenger' ? '#fff' : '#266441'} />
                 <Text style={[styles.roleText, role === 'passenger' && styles.roleTextActive]}>
                   Pasajero
                 </Text>
@@ -142,7 +147,7 @@ export default function AuthScreen() {
                 style={[styles.roleButton, role === 'driver' && styles.roleButtonActive]}
                 onPress={() => setRole('driver')}
               >
-                <FileText size={20} color={role === 'driver' ? '#fff' : '#1E40AF'} />
+                <FileText size={20} color={role === 'driver' ? '#fff' : '#266441'} />
                 <Text style={[styles.roleText, role === 'driver' && styles.roleTextActive]}>
                   Conductor
                 </Text>
@@ -219,7 +224,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1E40AF',
+    color: '#266441',
     marginTop: 16,
   },
   subtitle: {
@@ -271,17 +276,17 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1E40AF',
+    borderColor: '#266441',
     backgroundColor: '#fff',
   },
   roleButtonActive: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#266441',
   },
   roleText: {
     marginLeft: 8,
     fontSize: 16,
     fontWeight: '600',
-    color: '#1E40AF',
+    color: '#266441',
   },
   roleTextActive: {
     color: '#fff',
@@ -301,8 +306,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryButtonActive: {
-    backgroundColor: '#1E40AF',
-    borderColor: '#1E40AF',
+    backgroundColor: '#266441',
+    borderColor: '#266441',
   },
   categoryText: {
     fontSize: 14,
@@ -313,7 +318,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   submitButton: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#266441',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -333,7 +338,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   switchButtonText: {
-    color: '#1E40AF',
+    color: '#266441',
     fontSize: 16,
     fontWeight: '500',
   },
