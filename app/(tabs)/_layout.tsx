@@ -1,24 +1,59 @@
+import AuthScreen from '@/components/AuthScreen';
+import { useAuth } from '@/hooks/useAuth';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { DollarSign, House, Plus, User } from 'lucide-react-native';
 
 export default function TabLayout() {
+  const { user } = useAuth();
+
+  if (!user) return <AuthScreen />;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: '#fff',
+          borderTopWidth: 1,
+          borderTopColor: '#e2e8f0',
+          height: 80,
+          paddingBottom: 20,
+          paddingTop: 10,
+        },
+        tabBarActiveTintColor: '#1E40AF',
+        tabBarInactiveTintColor: '#64748b',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          // tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Inicio',
+          tabBarIcon: ({ size, color }) => (
+            <House size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="deposit"
         options={{
-          title: 'Explore',
-          // tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: user.role === 'driver' ? 'Retirar' : 'Depositar',
+          tabBarIcon: ({ size, color }) => (
+            user.role === 'driver' ? 
+            <DollarSign size={size} color={color} /> :
+            <Plus size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ size, color }) => (
+            <User size={size} color={color} />
+          ),
         }}
       />
     </Tabs>

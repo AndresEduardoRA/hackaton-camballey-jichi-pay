@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
-import AuthScreen from '@/components/AuthScreen';
-import PassengerView from '@/components/PassengerView';
-import DriverView from '@/components/DriverView';
+import ProfileScreen from '@/components/ProfileScreen';
 import LoadingScreen from '@/components/LoadingScreen';
+import AuthScreen from '@/components/AuthScreen';
+import { router } from 'expo-router';
 
-export default function HomeScreen() {
+export default function ProfileTab() {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -19,11 +19,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {user.role === 'passenger' ? (
-        <PassengerView user={user} onNavigate={() => {}} />
-      ) : (
-        <DriverView user={user} onNavigate={() => {}} />
-      )}
+      <ProfileScreen user={user} onBack={() => {router.back()}} />
     </View>
   );
 }
