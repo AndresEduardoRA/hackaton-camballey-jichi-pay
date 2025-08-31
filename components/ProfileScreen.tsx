@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
+import { router } from 'expo-router';
 import { ArrowLeft, CreditCard as Edit3, FileText, LogOut, User } from 'lucide-react-native';
 import React from 'react';
 import {
@@ -75,7 +76,7 @@ export default function ProfileScreen({ user, onBack }: ProfileScreenProps) {
           <ArrowLeft size={24} color="#1E40AF" />
         </TouchableOpacity>
         <Text style={styles.title}>Mi Perfil</Text>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity style={styles.editButton} onPress={()=> router.push('/(tabs)')}>
           <Edit3 size={20} color="#1E40AF" />
         </TouchableOpacity>
       </View>
@@ -123,30 +124,7 @@ export default function ProfileScreen({ user, onBack }: ProfileScreenProps) {
           </View>
         </View>
 
-        {user.role === 'passenger' && (
-          <View style={styles.balanceSection}>
-            <Text style={styles.sectionTitle}>Información de Saldo</Text>
-            
-            <View style={styles.balanceCard}>
-              <Text style={styles.balanceLabel}>Saldo Actual</Text>
-              <Text style={styles.balanceAmount}>Bs.  {user.balance?.toFixed(2) || '0.00'}</Text>
-            </View>
-          </View>
-        )}
-
         <View style={styles.actionsSection}>
-          <Text style={styles.sectionTitle}>Acciones</Text>
-          
-          <TouchableOpacity style={styles.actionItem}>
-            <FileText size={20} color="#1E40AF" />
-            <Text style={styles.actionText}>Historial de Transacciones</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionItem}>
-            <User size={20} color="#1E40AF" />
-            <Text style={styles.actionText}>Editar Información Personal</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity style={[styles.actionItem, styles.signOutItem]} onPress={handleSignOut}>
             <LogOut size={20} color="#dc2626" />
             <Text style={[styles.actionText, styles.signOutText]}>Cerrar Sesión</Text>
@@ -289,7 +267,7 @@ const styles = StyleSheet.create({
   actionsSection: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 24,
+    paddingHorizontal: 24,
     marginBottom: 40,
     elevation: 2,
     shadowColor: '#000',

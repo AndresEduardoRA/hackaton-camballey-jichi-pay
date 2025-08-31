@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, QrCode } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { ArrowLeft, QrCode, RefreshCcw } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
 
 interface DepositScreenProps {
@@ -22,7 +23,51 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Saldo mostrado en pantalla (se actualiza con recarga y realtime)
+  const [balance, setBalance] = useState<number>(Number(user?.balance ?? 0));
+  const [refreshing, setRefreshing] = useState(false);
+
   const amounts = [10, 20, 50, 100, 200, 500];
+
+  useEffect(() => {
+    fetchBalance();
+
+    // Realtime: si cambia mi fila en users, actualizo el saldo en vivo
+    const ch = supabase
+      .channel('deposit-balance-realtime')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${user.id}` },
+        (payload: any) => {
+          setBalance(Number(payload.new?.balance ?? 0));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [user.id]);
+
+  const fetchBalance = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('balance')
+        .eq('id', user.id)
+        .single();
+      if (error) throw error;
+      setBalance(Number(data?.balance ?? 0));
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+    }
+  };
+
+  const manualRefresh = async () => {
+    setRefreshing(true);
+    await fetchBalance();
+    setRefreshing(false);
+  };
 
   const handleDeposit = async () => {
     if (!selectedAmount) {
@@ -33,23 +78,28 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
     setLoading(true);
 
     try {
-      // Update user balance
+      // RPC que suma al saldo del usuario (pasajero)
       const { data: newBalance, error } = await supabase.rpc(
         'update_passenger_balance',
         {
           passenger_id: user.id,
-          amount: selectedAmount
+          amount: selectedAmount,
         }
       );
 
       if (error) throw error;
 
       Alert.alert('Depósito exitoso', `Se depositaron Bs. ${selectedAmount} a tu cuenta`);
+
+      // Actualiza UI inmediatamente (además llegará por realtime)
       if (typeof newBalance === 'number') {
-        user.balance = Number(newBalance);
+        setBalance(Number(newBalance));
+      } else {
+        await fetchBalance();
       }
+
       setSelectedAmount(null);
-      onBack();
+      onBack(); // si prefieres quedarte en esta pantalla, comenta esta línea
     } catch (error) {
       console.error('Error making deposit:', error);
       Alert.alert('Error', 'No se pudo procesar el depósito');
@@ -64,13 +114,26 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={manualRefresh} />
+          }
+        >
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={onBack}>
               <ArrowLeft size={24} color="#1E40AF" />
             </TouchableOpacity>
-            <Text style={styles.title}>Depositar Fondos</Text>
-            <View style={styles.placeholder} />
+            <Text style={styles.title}>Depositar</Text>
+
+            {/* Botón de recarga manual */}
+            <TouchableOpacity
+              style={styles.refreshButton}
+              onPress={manualRefresh}
+              disabled={refreshing}
+            >
+              <RefreshCcw size={18} color="#1E40AF" />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.content}>
@@ -90,17 +153,17 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
                     key={amount}
                     style={[
                       styles.amountButton,
-                      selectedAmount === amount && styles.amountButtonSelected
+                      selectedAmount === amount && styles.amountButtonSelected,
                     ]}
                     onPress={() => setSelectedAmount(amount)}
                   >
                     <Text
                       style={[
                         styles.amountText,
-                        selectedAmount === amount && styles.amountTextSelected
+                        selectedAmount === amount && styles.amountTextSelected,
                       ]}
                     >
-                      Bs.  {amount}
+                      Bs. {amount}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -110,18 +173,18 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
             <View style={styles.summary}>
               <View style={styles.summaryRow}>
                 <Text style={styles.summaryLabel}>Saldo actual:</Text>
-                <Text style={styles.summaryValue}>Bs.  {user.balance?.toFixed(2)}</Text>
+                <Text style={styles.summaryValue}>Bs. {balance.toFixed(2)}</Text>
               </View>
-              {selectedAmount && (
+              {selectedAmount !== null && (
                 <>
                   <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Monto a depositar:</Text>
-                    <Text style={styles.summaryValue}>Bs.  {selectedAmount.toFixed(2)}</Text>
+                    <Text style={styles.summaryValue}>Bs. {selectedAmount.toFixed(2)}</Text>
                   </View>
                   <View style={[styles.summaryRow, styles.totalRow]}>
                     <Text style={styles.totalLabel}>Nuevo saldo:</Text>
                     <Text style={styles.totalValue}>
-                      Bs.  {(user.balance + selectedAmount).toFixed(2)}
+                      Bs. {(balance + selectedAmount).toFixed(2)}
                     </Text>
                   </View>
                 </>
@@ -131,7 +194,7 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
             <TouchableOpacity
               style={[
                 styles.depositButton,
-                (!selectedAmount || loading) && styles.depositButtonDisabled
+                (!selectedAmount || loading) && styles.depositButtonDisabled,
               ]}
               onPress={handleDeposit}
               disabled={!selectedAmount || loading}
@@ -147,12 +210,12 @@ export default function DepositScreen({ user, onBack }: DepositScreenProps) {
   );
 }
 
+const BUTTON_WIDTH = (Dimensions.get('window').width - 120) / 3;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-  },
+  container: { flex: 1, backgroundColor: '#f8fafc' },
   scrollContent: { paddingBottom: 24 },
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -161,9 +224,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     backgroundColor: '#fff',
   },
-  backButton: {
-    padding: 8,
-  },
+  backButton: { padding: 8 },
   title: {
     flex: 1,
     fontSize: 20,
@@ -171,15 +232,20 @@ const styles = StyleSheet.create({
     color: '#1E40AF',
     textAlign: 'center',
   },
-  placeholder: {
-    width: 40,
+
+  // Botón recargar (encabezado)
+  refreshButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eef2ff',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 24,
-  },
+  refreshText: { marginLeft: 6, color: '#1E40AF', fontWeight: '600', fontSize: 12 },
+
+  content: { flex: 1, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 24 },
+
   qrSection: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -192,19 +258,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  qrTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1E40AF',
-    marginTop: 16,
-  },
-  qrSubtitle: {
-    fontSize: 14,
-    color: '#64748b',
-    textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 16,
-  },
+  qrTitle: { fontSize: 18, fontWeight: '600', color: '#1E40AF', marginTop: 16 },
+  qrSubtitle: { fontSize: 14, color: '#64748b', textAlign: 'center', marginTop: 8, paddingHorizontal: 16 },
+
   amountSection: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -216,19 +272,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 16,
-  },
-  amountGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
+  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#374151', marginBottom: 16 },
+  amountGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   amountButton: {
-    width: (Dimensions.get('window').width - 120) / 3,
+    width: BUTTON_WIDTH,
     paddingVertical: 16,
     borderRadius: 12,
     borderWidth: 2,
@@ -236,18 +283,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
-  amountButtonSelected: {
-    borderColor: '#1E40AF',
-    backgroundColor: '#1E40AF',
-  },
-  amountText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  amountTextSelected: {
-    color: '#fff',
-  },
+  amountButtonSelected: { borderColor: '#1E40AF', backgroundColor: '#1E40AF' },
+  amountText: { fontSize: 16, fontWeight: '600', color: '#374151' },
+  amountTextSelected: { color: '#fff' },
+
   summary: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -259,49 +298,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  summaryLabel: {
-    fontSize: 16,
-    color: '#64748b',
-  },
-  summaryValue: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#374151',
-  },
-  totalRow: {
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    marginTop: 8,
-    paddingTop: 16,
-  },
-  totalLabel: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  totalValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1E40AF',
-  },
+  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
+  summaryLabel: { fontSize: 16, color: '#64748b' },
+  summaryValue: { fontSize: 16, fontWeight: '500', color: '#374151' },
+  totalRow: { borderTopWidth: 1, borderTopColor: '#e5e7eb', marginTop: 8, paddingTop: 16 },
+  totalLabel: { fontSize: 18, fontWeight: '600', color: '#374151' },
+  totalValue: { fontSize: 18, fontWeight: 'bold', color: '#1E40AF' },
+
   depositButton: {
     backgroundColor: '#1E40AF',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
   },
-  depositButtonDisabled: {
-    backgroundColor: '#9ca3af',
-  },
-  depositButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#fff',
-  },
+  depositButtonDisabled: { backgroundColor: '#9ca3af' },
+  depositButtonText: { fontSize: 18, fontWeight: '600', color: '#fff' },
 });

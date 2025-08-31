@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, DollarSign } from 'lucide-react-native';
+import { ArrowLeft, DollarSign, RefreshCcw } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 
 interface WithdrawScreenProps {
@@ -20,8 +21,9 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Usaremos el saldo real del usuario (conductor) en DB
+  // saldo actual en DB
   const [availableBalance, setAvailableBalance] = useState<number>(Number(user?.balance ?? 0));
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchBalance();
@@ -58,6 +60,12 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
     }
   };
 
+  const manualRefresh = async () => {
+    setRefreshing(true);
+    await fetchBalance();
+    setRefreshing(false);
+  };
+
   const amounts = [50, 100, 200, 500, 1000];
   const availableAmounts = amounts.filter((amount) => amount <= availableBalance);
 
@@ -87,11 +95,8 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
       );
 
       setSelectedAmount(null);
-      // El saldo bajará por Realtime. Si no quieres esperar, también puedes:
+      // Si no quieres esperar al realtime:
       // await fetchBalance();
-
-      // Si quieres regresar automáticamente:
-      // onBack();
     } catch (error) {
       console.error('Error processing withdrawal:', error);
       Alert.alert('Error', 'No se pudo procesar el retiro');
@@ -107,16 +112,21 @@ export default function WithdrawScreen({ user, onBack }: WithdrawScreenProps) {
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <ArrowLeft size={24} color="#1E40AF" />
         </TouchableOpacity>
-        <Text style={styles.title}>Retirar Ganancias</Text>
-        <View style={styles.placeholder} />
+        <Text style={styles.title}>Retirar</Text>
+
+        {/* Botón Recargar */}
+        <TouchableOpacity style={styles.refreshButton} onPress={manualRefresh} disabled={refreshing}>
+          <RefreshCcw size={18} color="#1E40AF" />
+        </TouchableOpacity>
       </View>
 
-      {/* Contenido scrolleable */}
+      {/* Contenido scrolleable con pull-to-refresh */}
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={manualRefresh} />}
       >
-        <View style={styles.earningsSection}>
+        <View className="earn" style={styles.earningsSection}>
           <DollarSign size={48} color="#059669" />
           <Text style={styles.earningsTitle}>Ganancias Disponibles</Text>
           <Text style={styles.earningsAmount}>Bs. {availableBalance.toFixed(2)}</Text>
@@ -243,15 +253,22 @@ const styles = StyleSheet.create({
     color: '#1E40AF',
     textAlign: 'center',
   },
-  placeholder: {
-    width: 40,
+  // botón recargar
+  refreshButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eef2ff',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
   },
+  refreshText: { marginLeft: 6, color: '#1E40AF', fontWeight: '600', fontSize: 12 },
 
   /* ScrollView */
   scrollContent: {
     paddingHorizontal: 24,
     paddingTop: 24,
-    paddingBottom: 40, // espacio para botón en pantallas chicas
+    paddingBottom: 40,
   },
 
   earningsSection: {
